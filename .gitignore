@@ -4,3 +4,4 @@ dist/
 .editorconfig
 .vscode
 firebase.config.js
+.firebaserc
