@@ -9,16 +9,11 @@ import 'firebase/firestore'
 import firebaseConfig from '../firebase.config'
 
 firebase.initializeApp(firebaseConfig)
-// firebase utils
 const db = firebase.firestore()
-console.log(db.collection('users'))
-// const auth = firebase.auth()
-// const currentUser = auth.currentUser
-
+window.db = db
 Vue.config.productionTip = false
 Vue.use(Vuex)
 Vue.use(VueSession)
-
 new Vue({
   vuetify,
   router,

@@ -32,7 +32,6 @@
     </div>
   </v-container>
 </template>
-
 <script>
 import config from '@/config/app'
 import { loginByEmailAndPassword } from '@/services/authentication'
@@ -49,12 +48,14 @@ export default {
   }),
   methods: {
     loginByEmailAndPassword,
-    login() {
-      this.user = loginByEmailAndPassword({ email: this.email, password: this.password })
-      if (!this.user) {
+    async login() {
+      this.user = await loginByEmailAndPassword({ email: this.email, password: this.password })
+      if (this.user) {
         this.$session.start()
         this.$session.set('user', this.user)
         this.$router.push('results')
+      } else {
+        this.failedLogin = true
       }
     },
     logout() {
@@ -62,6 +63,7 @@ export default {
       this.user = null
     },
   },
+
   mounted() {
     this.user = this.$session.get('user')
   },

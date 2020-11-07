@@ -6,7 +6,8 @@ module.exports = {
     node: true,
   },
   // extends: ['eslint:recommended', 'plugin:vue/recommended', 'plugin:prettier/recommended', 'prettier/vue'],
-  extends: ['eslint:recommended'],
+  // extends: ['eslint:recommended'],
+  extends: ['plugin:vue/base'],
   parserOptions: {
     //parser: '@typescript-eslint/parser',
     sourceType: 'module',
