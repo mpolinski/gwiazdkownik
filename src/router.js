@@ -4,14 +4,24 @@ import VueRouter from 'vue-router'
 import Login from './views/Login'
 import Results from './views/Results'
 
-const user = { name: 'John' }
-
 const routes = [
-  { path: '/', component: Login },
+  {
+    path: '/',
+    component: Login,
+    beforeEnter: (to, from, next) => {
+      const user = Vue.prototype.$session.get('user')
+      if (user) {
+        next('/results')
+      } else {
+        next()
+      }
+    }
+  },
   {
     path: '/results',
     component: Results,
     beforeEnter: (to, from, next) => {
+      const user = Vue.prototype.$session.get('user')
       if (!user) {
         next('/')
       } else {

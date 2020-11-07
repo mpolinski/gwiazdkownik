@@ -6,6 +6,14 @@
       <v-card-title v-if="myTaker">Kto dostaje prezent ode mnie? {{ myTaker.name }}!</v-card-title>
       <v-card-title v-else>Szukam osoby do obdarowania ...</v-card-title>
     </v-card>
+    <v-card class="mx-auto" max-width="400" v-if="user">
+      <v-card-title>Cześć {{ user.name }}</v-card-title>
+      <v-card-actions>
+        <v-btn outlined rounded text @click="logout">
+          Wyloguj
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </v-container>
 </template>
 
@@ -21,11 +29,18 @@ export default {
   }),
   methods: {
     async pickPresentRecipienteRandomly() {
-      console.log(this.user)
       const presentList = await getList()
       const users = await getUsers()
+      const usersWithoutMe = _.map(
+        _.filter(users, element => element.email !== this.user.email),
+        element => element.email
+      )
+      const usersWithPresents = _.map(presentList, element => element.to)
+      const potentialTakers = _.difference(usersWithoutMe, usersWithPresents)
+      const randomTaker = _.sample(potentialTakers)
 
       try {
+        addPresent(this.user.email, randomTaker)
         this.presentSaved = true
       } catch (error) {
         console.error(error)
@@ -42,12 +57,17 @@ export default {
         return null
       }
     },
+    logout() {
+      this.$session.destroy()
+      this.$router.push('/')
+    },
   },
   async mounted() {
     this.user = this.$session.get('user')
     this.myTaker = await this.getMyPresentTaker()
     if (!this.myTaker) {
       await this.pickPresentRecipienteRandomly()
+      this.myTaker = await this.getMyPresentTaker()
     }
   },
 }
