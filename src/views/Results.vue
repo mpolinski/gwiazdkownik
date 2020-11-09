@@ -30,13 +30,19 @@ export default {
   methods: {
     async pickPresentRecipienteRandomly() {
       const presentList = await getList()
+      const firstPresent = _.head(presentList)
       const users = await getUsers()
       const usersWithoutMe = _.map(
         _.filter(users, element => element.email !== this.user.email),
         element => element.email
       )
       const usersWithPresents = _.map(presentList, element => element.to)
-      const potentialTakers = _.difference(usersWithoutMe, usersWithPresents)
+      let potentialTakers = _.difference(usersWithoutMe, usersWithPresents)
+
+      if (potentialTakers.length > 1 && firstPresent) {
+        potentialTakers = _.filter(potentialTakers, element => element !== firstPresent.from)
+      }
+
       const randomTaker = _.sample(potentialTakers)
 
       try {
